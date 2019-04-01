@@ -7,12 +7,12 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.inyomanw.corelibrary.R
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
+import org.joda.time.*
 import org.joda.time.format.DateTimeFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.absoluteValue
 
 fun ImageView.onLoad(context: Context, url :String){
     Glide.with(context)
@@ -78,6 +78,27 @@ fun String?.convertDate(inputFormat: String = "yyyy-MM-dd",
         }
     }
     return ""
+}
+
+fun Context.calculateTwoDates(firstDate: String = "yyyy-MM-dd"): String {
+    val date1 = LocalDateTime.parse(firstDate)
+    val str = DateTimeFormat.forPattern("yyyy-MM-dd")
+    val secondDate = LocalDate.now().toString(str)
+    val date2 = LocalDateTime.parse(secondDate)
+    var value = Days.daysBetween(date2, date1).days
+    return when {
+        value >= 7 -> {
+            value = Weeks.weeksBetween(date2, date1).weeks
+            value.absoluteValue.toString() + getString(R.string.allias_week)
+        }
+        value >= 30 -> {
+            value = Months.monthsBetween(date2, date1).months
+            value.absoluteValue.toString() + getString(R.string.allias_month)
+        }
+        value == 0 -> 1.toString() + getString(R.string.allias_day)
+        else -> value.absoluteValue.toString() + getString(R.string.allias_day)
+
+    }
 }
 
 fun String.changeDateFormat(oldPattern: String, newPattern: String): String {

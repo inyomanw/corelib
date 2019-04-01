@@ -9,6 +9,9 @@ buildscript {
     ext.retrofit_version = '2.4.0'
     ext.okhttp3_version = '3.10.0'
     ext.dagger_version = '2.16'
+    ext.rxjava_version = '2.2.3'
+    ext.rxandroid_version = '2.1.0'
+    ext.rxbinding_version = '2.0.0'
 
     repositories {
         google()
