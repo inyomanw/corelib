@@ -1,6 +1,8 @@
 package com.inyomanw.corelibrary.utils
 
+import android.app.Activity
 import android.content.Context
+import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -127,4 +129,21 @@ fun String.changeDateFormatWithoutTimeZone(oldPattern: String, newPattern: Strin
         e.printStackTrace()
     }
     return res
+}
+
+fun Activity.showDialog(message : String, cancelable : Boolean = false,
+                        positiveButton : String, positiveAction: () -> Unit = {},
+                        negativeButton : String, negativeAction : () -> Unit = {}) {
+    val dialogBuilder = AlertDialog.Builder(this).apply {
+        setMessage(message)
+        setCancelable(cancelable)
+        setPositiveButton(positiveButton) { dialog, _ ->
+            positiveAction()
+            dialog.dismiss()
+        }
+        setNegativeButton(negativeButton) { dialog, which ->
+            negativeAction()
+            dialog.dismiss()
+        }
+    }
 }

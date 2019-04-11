@@ -1,11 +1,13 @@
 package com.inyomanw.corelibrary.deps
 
+import android.content.Context
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.internal.bind.DateTypeAdapter
 import dagger.Module
 import dagger.Provides
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -16,7 +18,15 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
-class NetworkModule(private val baseUrl: String) {
+class NetworkModule(private val baseUrl: String, private  val context : Context) {
+
+    companion object {
+        const val REQUEST_TIMEOUT = 20
+        const val CACHE_DIR_SIZE_30MB = 30 * 1024 * 1024
+        const val KEEP_ALIVE_DURATION = (30 * 1000).toLong()
+        const val MAX_IDLE_CONNECTIONS = 10
+    }
+
     @Provides
     @Singleton
     fun providesGson(): Gson {
@@ -34,9 +44,17 @@ class NetworkModule(private val baseUrl: String) {
 
     @Provides
     @Singleton
-    fun providesOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
+    fun providesCache() : Cache {
+        return Cache(context.externalCacheDir ?: context.cacheDir, CACHE_DIR_SIZE_30MB.toLong())
+    }
+
+    @Provides
+    @Singleton
+    fun providesOkHttpClient(loggingInterceptor: HttpLoggingInterceptor,
+                             cache: Cache): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .cache(cache)
             .readTimeout(20, TimeUnit.SECONDS)
             .writeTimeout(20, TimeUnit.SECONDS)
             .connectTimeout(20, TimeUnit.SECONDS)
