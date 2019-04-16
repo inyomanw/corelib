@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">corelibrary</string>
+    <string name="allias_hour">h</string>
     <string name="allias_day">d</string>
     <string name="allias_week">w</string>
     <string name="allias_month">m</string>
+    <string name="allias_year">y</string>
 </resources>
